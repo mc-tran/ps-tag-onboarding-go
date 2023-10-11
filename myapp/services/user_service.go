@@ -8,39 +8,36 @@ import (
 
 	"github.com/minh/data"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type UserService struct {
 	mongoclient *mongo.Client
+	context     context.Context
 }
 
 func NewUserService() *UserService {
-	client := CreateMongoClient()
 
-	return &UserService{mongoclient: client}
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	client := CreateMongoClient(ctx)
+
+	return &UserService{mongoclient: client, context: ctx}
 }
 
-func CreateMongoClient() *mongo.Client {
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+func CreateMongoClient(c context.Context) *mongo.Client {
 
-	clientOptions := options.Client().ApplyURI("mongodb://admin:password@localhost:27017/?authSource=admin")
-	mongoClient, err := mongo.Connect(ctx, clientOptions)
-
-	defer func() {
-		cancel()
-		if err := mongoClient.Disconnect(ctx); err != nil {
-			log.Fatalf("mongodb disconnect error : %v", err)
-		}
-	}()
+	//db is docker-compose service name
+	clientOptions := options.Client().ApplyURI("mongodb://admin:password@db:27017")
+	mongoClient, err := mongo.Connect(c, clientOptions)
 
 	if err != nil {
 		log.Fatalf("connection error :%v", err)
 		panic(err)
 	}
 
-	err = mongoClient.Ping(ctx, nil)
+	err = mongoClient.Ping(c, nil)
 	if err != nil {
 		log.Fatalf("ping mongodb error :%v", err)
 		panic(err)
@@ -53,10 +50,39 @@ func CreateMongoClient() *mongo.Client {
 
 func (us *UserService) AddUser(p *data.User) {
 
-	fmt.Println("adding user")
+	database := us.mongoclient.Database("user")
+	collection := database.Collection("userdetails")
+
+	insertedDocument := bson.M{
+		"id":        p.ID,
+		"firstname": p.FirstName,
+		"lastname":  p.LastName,
+		"email":     p.Email,
+		"age":       p.Age,
+	}
+
+	_, err := collection.InsertOne(us.context, insertedDocument)
+
+	log.Printf("inserted")
+
+	if err != nil {
+		panic(err)
+	}
 }
 
-func (us *UserService) GetUser(p *data.User) {
+func (us *UserService) GetUser(id string) data.User {
 
-	fmt.Println("adding user")
+	database := us.mongoclient.Database("user")
+	collection := database.Collection("userdetails")
+
+	var user data.User
+	err := collection.FindOne(us.context, bson.M{"id": id}).Decode(&user)
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("get user")
+
+	return user
 }

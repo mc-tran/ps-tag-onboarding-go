@@ -28,7 +28,7 @@ func main() {
 	postRouter.Use(uh.MiddlewareValidateUser)
 
 	s := &http.Server{
-		Addr:         ":9091",
+		Addr:         ":8080",
 		Handler:      sm,
 		IdleTimeout:  120 * time.Second,
 		ReadTimeout:  1 * time.Second,

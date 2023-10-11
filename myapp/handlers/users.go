@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/minh/data"
 	"github.com/minh/services"
 )
@@ -25,11 +26,13 @@ func (p *Users) GetUsers(rw http.ResponseWriter, r *http.Request) {
 func (p *Users) GetUser(rw http.ResponseWriter, r *http.Request) {
 	p.l.Println("Handle GET Users")
 
-	// vars := mux.Vars(r)
-	// id, _ := vars["id"]
+	vars := mux.Vars(r)
+	id, _ := vars["id"]
 
-	// user, _ := data.GetUserByID(id)
-	// user.ToJSON(rw)
+	userservice := services.NewUserService()
+	user := userservice.GetUser(id)
+
+	user.ToJSON(rw)
 }
 
 func (p *Users) AddUsers(rw http.ResponseWriter, r *http.Request) {
