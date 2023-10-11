@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/gorilla/mux"
+	"github.com/minh/constants"
 	"github.com/minh/data"
 	"github.com/minh/services"
 )
@@ -58,12 +59,12 @@ func (p Users) MiddlewareValidateUser(next http.Handler) http.Handler {
 			return
 		}
 
-		validationErr := prod.ValidateNew()
+		validationErr := prod.ValidateFields()
 
 		userservice := services.NewUserService()
 
 		if userservice.DoesUserExist(prod.FirstName, prod.LastName) {
-			validationErr = append(validationErr, "User already exists")
+			validationErr = append(validationErr, constants.Error_Name_Unique)
 		}
 
 		if len(validationErr) > 0 {

@@ -6,6 +6,8 @@ import (
 	"regexp"
 
 	"github.com/go-playground/validator"
+
+	"github.com/minh/constants"
 )
 
 type User struct {
@@ -24,26 +26,26 @@ func (p *User) Validate() error {
 	return validate.Struct(p)
 }
 
-func (p *User) ValidateNew() []string {
+func (p *User) ValidateFields() []string {
 
 	var e []string
 
 	if p.FirstName == "" {
-		e = append(e, "First Name is required")
+		e = append(e, constants.Error_Name_Required)
 	}
 
 	if p.LastName == "" {
-		e = append(e, "Last Name is required")
+		e = append(e, constants.Error_Name_Required)
 	}
 
 	if p.Email == "" {
-		e = append(e, "Last Name is required")
+		e = append(e, constants.Error_Email_Required)
 	} else if !validateEmail(p.Email) {
-		e = append(e, "Email is invalid")
+		e = append(e, constants.Error_Email_Format)
 	}
 
 	if p.Age < 18 {
-		e = append(e, "Age must be greater than 18")
+		e = append(e, constants.Error_Age_Minimum)
 	}
 
 	return e
