@@ -25,7 +25,7 @@ func main() {
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/save", uh.AddUsers)
-	postRouter.Use(uh.MiddlewareValidateProduct)
+	postRouter.Use(uh.MiddlewareValidateUser)
 
 	s := &http.Server{
 		Addr:         ":9091",
