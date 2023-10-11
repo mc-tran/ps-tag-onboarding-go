@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/gorilla/mux"
 	"github.com/minh/data"
@@ -57,12 +58,15 @@ func (p Users) MiddlewareValidateUser(next http.Handler) http.Handler {
 			return
 		}
 
-		err = prod.Validate()
-		if err != nil {
+		validationErr := prod.ValidateNew()
+
+		if len(validationErr) > 0 {
 			p.l.Println("[ERROR] validating user", err)
+
+			var errors = strings.Join(validationErr[:], ",")
 			http.Error(
 				rw,
-				fmt.Sprintf("Error validating user: %s", err),
+				fmt.Sprintf("Error validating user: %s", errors),
 				http.StatusBadRequest,
 			)
 			return
