@@ -86,3 +86,19 @@ func (us *UserService) GetUser(id string) data.User {
 
 	return user
 }
+
+func (us *UserService) DoesUserExist(firstname string, lastname string) bool {
+
+	database := us.mongoclient.Database("user")
+	collection := database.Collection("userdetails")
+
+	filter := bson.M{"firstname": firstname, "lastname": lastname}
+
+	count, err := collection.CountDocuments(us.context, filter)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return count > 0
+}

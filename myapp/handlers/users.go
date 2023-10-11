@@ -60,6 +60,12 @@ func (p Users) MiddlewareValidateUser(next http.Handler) http.Handler {
 
 		validationErr := prod.ValidateNew()
 
+		userservice := services.NewUserService()
+
+		if userservice.DoesUserExist(prod.FirstName, prod.LastName) {
+			validationErr = append(validationErr, "User already exists")
+		}
+
 		if len(validationErr) > 0 {
 			p.l.Println("[ERROR] validating user", err)
 

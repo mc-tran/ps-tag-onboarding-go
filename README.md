@@ -1,19 +1,18 @@
 # ps-tag-onboarding-go
 
+This application is an API based on the Java application that can be found here: https://github.com/wexinc/ps-tag-onboarding
+
+The application is written in Golang, utilising the Gorilla Mux framework. This framework was chosen in prder to simplify the router and handlers.
+
 
 **Run Application**
 
-go run main.go
-
-**Run Mongo**
-
 docker-compose up
+
 
 **Hit endpoints**
 
-curl -v localhost:9091/save -d '{"id" :"222", "firstname":"Ham", "lastname":"Cheese", "email": "a@a.a", "age": 20}'
+curl -v localhost:8080/save -d '{"id" :"222", "firstname":"Ham", "lastname":"Cheese", "email": "a@a.a", "age": 20}'
 
-curl localhost:9091/find/222 | jq
-
-curl localhost:9091/users | jq   
+curl localhost:8080/find/222 | jq
 
