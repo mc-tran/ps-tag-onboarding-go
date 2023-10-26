@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/mc-tran/ps-tag-onboarding-go/internal/constants"
 	"github.com/mc-tran/ps-tag-onboarding-go/internal/data"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -78,6 +79,9 @@ func (us *UserService) GetUser(id string) data.User {
 	err := collection.FindOne(us.context, bson.M{"id": id}).Decode(&user)
 
 	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			panic(constants.Error_User_Not_Found)
+		}
 		panic(err)
 	}
 

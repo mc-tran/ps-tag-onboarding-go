@@ -42,7 +42,6 @@ func (p *UsersHandler) AddUsers(rw http.ResponseWriter, r *http.Request) {
 
 	user := r.Context().Value(KeyUser{}).(data.User)
 
-	//userservice := services.NewUserService()
 	p.userService.AddUser(&user)
 }
 
