@@ -9,13 +9,15 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/minh/handlers"
+	"github.com/minh/services"
 )
 
 func main() {
 
 	l := log.New(os.Stdout, "minh-api", log.LstdFlags)
 
-	uh := handlers.NewUsers(l)
+	userService := services.NewUserService()
+	uh := handlers.NewUsersHandler(l, userService)
 
 	sm := mux.NewRouter()
 

@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"time"
 
 	"github.com/minh/data"
 
@@ -20,7 +19,7 @@ type UserService struct {
 
 func NewUserService() *UserService {
 
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx := context.TODO()
 	client := CreateMongoClient(ctx)
 
 	return &UserService{mongoclient: client, context: ctx}
