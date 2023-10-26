@@ -3,7 +3,7 @@ package data
 import (
 	"testing"
 
-	"github.com/minh/constants"
+	"github.com/mc-tran/ps-tag-onboarding-go/constants"
 
 	"github.com/stretchr/testify/assert"
 )

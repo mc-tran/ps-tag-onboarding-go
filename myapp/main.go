@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/minh/handlers"
-	"github.com/minh/services"
+	"github.com/mc-tran/ps-tag-onboarding-go/handlers"
+	"github.com/mc-tran/ps-tag-onboarding-go/services"
 )
 
 func main() {

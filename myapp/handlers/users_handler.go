@@ -8,9 +8,9 @@ import (
 	"strings"
 
 	"github.com/gorilla/mux"
-	"github.com/minh/constants"
-	"github.com/minh/data"
-	"github.com/minh/interfaces"
+	"github.com/mc-tran/ps-tag-onboarding-go/constants"
+	"github.com/mc-tran/ps-tag-onboarding-go/data"
+	"github.com/mc-tran/ps-tag-onboarding-go/interfaces"
 )
 
 type UsersHandler struct {

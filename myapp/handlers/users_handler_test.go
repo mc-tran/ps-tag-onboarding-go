@@ -9,8 +9,8 @@ import (
 	"testing"
 
 	"github.com/gorilla/mux"
-	"github.com/minh/data"
-	"github.com/minh/services"
+	"github.com/mc-tran/ps-tag-onboarding-go/data"
+	"github.com/mc-tran/ps-tag-onboarding-go/services"
 	"github.com/stretchr/testify/assert"
 )
 

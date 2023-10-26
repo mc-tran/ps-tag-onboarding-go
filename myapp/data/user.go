@@ -5,7 +5,7 @@ import (
 	"io"
 	"regexp"
 
-	"github.com/minh/constants"
+	"github.com/mc-tran/ps-tag-onboarding-go/constants"
 )
 
 type User struct {

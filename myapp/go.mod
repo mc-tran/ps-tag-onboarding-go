@@ -1,4 +1,4 @@
-module github.com/minh
+module github.com/mc-tran/ps-tag-onboarding-go
 
 go 1.21.1
 
