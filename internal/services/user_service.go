@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/mc-tran/ps-tag-onboarding-go/data"
+	"github.com/mc-tran/ps-tag-onboarding-go/internal/data"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"

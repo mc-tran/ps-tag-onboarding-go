@@ -1,7 +1,7 @@
 package interfaces
 
 import (
-	"github.com/mc-tran/ps-tag-onboarding-go/data"
+	"github.com/mc-tran/ps-tag-onboarding-go/internal/data"
 )
 
 type UserRepository interface {

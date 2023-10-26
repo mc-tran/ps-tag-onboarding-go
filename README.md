@@ -12,7 +12,9 @@ docker-compose up
 
 **Hit endpoints**
 
+***Create a User*** 
 curl -v localhost:8080/save -d '{"id" :"222", "firstname":"Ham", "lastname":"Cheese", "email": "a@a.a", "age": 20}'
 
-curl localhost:8080/find/222 | jq
+***Find a User***
+curl localhost:8080/find/222
 
