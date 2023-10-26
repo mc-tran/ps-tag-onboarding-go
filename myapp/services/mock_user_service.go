@@ -1,8 +1,6 @@
-package mockservice
+package services
 
 import (
-	"fmt"
-
 	"github.com/minh/data"
 )
 
@@ -12,17 +10,26 @@ func NewMockUserService() *MockUserService {
 	return &MockUserService{}
 }
 
-func (us *MockUserService) GetUserByID(id string) (*data.User, error) {
+func (us *MockUserService) GetUser(id string) data.User {
 	for _, user := range userList {
 		if user.ID == id {
-			return user, nil
+			return *user
 		}
 	}
-	return nil, fmt.Errorf("user with ID %s not found", id)
+	return data.User{}
 }
 
 func (us *MockUserService) AddUser(p *data.User) {
 	userList = append(userList, p)
+}
+
+func (us *MockUserService) DoesUserExist(firstname string, lastname string) bool {
+	for _, user := range userList {
+		if user.FirstName == firstname && user.LastName == lastname {
+			return true
+		}
+	}
+	return false
 }
 
 func (us *MockUserService) GetUsers() data.Users {
