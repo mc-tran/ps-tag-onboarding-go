@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -25,12 +24,12 @@ func main() {
 
 	getRouter.HandleFunc("/users", uh.GetUsers)
 	getRouter.HandleFunc("/find/{id:[0-9]+}", uh.GetUser)
-	getRouter.Use(ErrorHandler)
+	getRouter.Use(handlers.ErrorHandler)
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/save", uh.AddUsers)
 	postRouter.Use(uh.MiddlewareValidateUser)
-	postRouter.Use(ErrorHandler)
+	postRouter.Use(handlers.ErrorHandler)
 
 	s := &http.Server{
 		Addr:         ":8080",
@@ -41,23 +40,4 @@ func main() {
 	}
 
 	s.ListenAndServe()
-}
-
-func ErrorHandler(next http.Handler) http.Handler {
-
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
-		defer func() {
-
-			if err := recover(); err != nil {
-
-				http.Error(w, fmt.Sprintf("An error occured: %s", err), http.StatusInternalServerError)
-
-			}
-		}()
-
-		next.ServeHTTP(w, r)
-
-	})
-
 }
