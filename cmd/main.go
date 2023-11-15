@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"os"
@@ -8,15 +9,18 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/mc-tran/ps-tag-onboarding-go/internal/handlers"
-	"github.com/mc-tran/ps-tag-onboarding-go/internal/services"
+	"github.com/mc-tran/ps-tag-onboarding-go/internal/repository"
 )
 
 func main() {
 
 	l := log.New(os.Stdout, "minh-api", log.LstdFlags)
 
-	userService := services.NewUserService()
-	uh := handlers.NewUsersHandler(l, userService)
+	mongoClient := repository.CreateMongoClient(context.TODO())
+
+	userRepository := repository.NewUserRepository(mongoClient)
+
+	uh := handlers.NewUsersHandler(l, userRepository)
 
 	sm := mux.NewRouter()
 

@@ -1,4 +1,4 @@
-package services
+package repository
 
 import (
 	"github.com/mc-tran/ps-tag-onboarding-go/internal/data"
@@ -36,14 +36,14 @@ func (us *MockUserService) GetUsers() data.Users {
 	return userList
 }
 
-var userList = []data.User{
-	data.User{
+var userList = []*data.User{
+	&data.User{
 		FirstName: "Michael",
 		LastName:  "Scott",
 		Email:     "aaa@aaa.com",
 		Age:       23,
 	},
-	data.User{
+	&data.User{
 		FirstName: "Tom",
 		LastName:  "Van",
 		Email:     "bbb@bbb.com",

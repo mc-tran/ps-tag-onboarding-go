@@ -1,4 +1,4 @@
-package services
+package repository
 
 import (
 	"context"
@@ -11,45 +11,21 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type UserService struct {
+type UserRepository struct {
 	mongoclient *mongo.Client
 	context     context.Context
 }
 
-func NewUserService() *UserService {
+func NewUserRepository(client *mongo.Client) *UserRepository {
 
 	ctx := context.TODO()
-	client := CreateMongoClient(ctx)
 
-	return &UserService{mongoclient: client, context: ctx}
+	return &UserRepository{mongoclient: client, context: ctx}
 }
 
-func CreateMongoClient(c context.Context) *mongo.Client {
-
-	//db is docker-compose service name
-	clientOptions := options.Client().ApplyURI("mongodb://admin:password@db:27017")
-	mongoClient, err := mongo.Connect(c, clientOptions)
-
-	if err != nil {
-		log.Fatalf("connection error :%v", err)
-		panic(err)
-	}
-
-	err = mongoClient.Ping(c, nil)
-	if err != nil {
-		log.Fatalf("ping mongodb error :%v", err)
-		panic(err)
-	}
-
-	fmt.Println("ping success")
-
-	return mongoClient
-}
-
-func (us *UserService) AddUser(p *data.User) string {
+func (us *UserRepository) AddUser(p *data.User) string {
 
 	database := us.mongoclient.Database("user")
 	collection := database.Collection("userdetails")
@@ -74,7 +50,7 @@ func (us *UserService) AddUser(p *data.User) string {
 	return inserted
 }
 
-func (us *UserService) GetUser(id string) data.User {
+func (us *UserRepository) GetUser(id string) data.User {
 
 	database := us.mongoclient.Database("user")
 	collection := database.Collection("userdetails")
@@ -96,7 +72,7 @@ func (us *UserService) GetUser(id string) data.User {
 	return user
 }
 
-func (us *UserService) DoesUserExist(firstname string, lastname string) bool {
+func (us *UserRepository) DoesUserExist(firstname string, lastname string) bool {
 
 	database := us.mongoclient.Database("user")
 	collection := database.Collection("userdetails")

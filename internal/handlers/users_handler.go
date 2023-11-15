@@ -15,11 +15,11 @@ import (
 
 type UsersHandler struct {
 	l           *log.Logger
-	userService interfaces.UserRepository
+	userManager interfaces.UserManager
 }
 
-func NewUsersHandler(l *log.Logger, userService interfaces.UserRepository) *UsersHandler {
-	return &UsersHandler{l, userService}
+func NewUsersHandler(l *log.Logger, userManager interfaces.UserManager) *UsersHandler {
+	return &UsersHandler{l, userManager}
 }
 
 func (p *UsersHandler) GetUsers(rw http.ResponseWriter, r *http.Request) {
@@ -32,7 +32,7 @@ func (p *UsersHandler) GetUser(rw http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := vars["id"]
 
-	user := p.userService.GetUser(id)
+	user := p.userManager.GetUser(id)
 
 	user.ToJSON(rw)
 }
@@ -42,7 +42,7 @@ func (p *UsersHandler) AddUsers(rw http.ResponseWriter, r *http.Request) {
 
 	user := r.Context().Value(KeyUser{}).(data.User)
 
-	id := p.userService.AddUser(&user)
+	id := p.userManager.AddUser(&user)
 
 	rw.Write([]byte(id))
 }
@@ -62,7 +62,7 @@ func (p UsersHandler) MiddlewareValidateUser(next http.Handler) http.Handler {
 
 		validationErr := prod.ValidateFields()
 
-		if p.userService.DoesUserExist(prod.FirstName, prod.LastName) {
+		if p.userManager.DoesUserExist(prod.FirstName, prod.LastName) {
 			validationErr = append(validationErr, constants.Error_Name_Unique)
 		}
 
