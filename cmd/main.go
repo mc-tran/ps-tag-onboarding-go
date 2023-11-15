@@ -14,9 +14,11 @@ import (
 
 func main() {
 
-	l := log.New(os.Stdout, "minh-api", log.LstdFlags)
+	l := log.New(os.Stdout, "test-api", log.LstdFlags)
 
-	mongoClient := repository.CreateMongoClient(context.TODO())
+	mongoUri := os.Getenv("APP_MONGO_CONNECTION_STRING")
+
+	mongoClient := repository.CreateMongoClient(context.TODO(), mongoUri)
 
 	userRepository := repository.NewUserRepository(mongoClient)
 

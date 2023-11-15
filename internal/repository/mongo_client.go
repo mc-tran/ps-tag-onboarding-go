@@ -9,10 +9,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func CreateMongoClient(c context.Context) *mongo.Client {
+func CreateMongoClient(c context.Context, connectionString string) *mongo.Client {
 
-	//db is docker-compose service name
-	clientOptions := options.Client().ApplyURI("mongodb://admin:password@db:27017")
+	clientOptions := options.Client().ApplyURI(connectionString)
 	mongoClient, err := mongo.Connect(c, clientOptions)
 
 	if err != nil {
