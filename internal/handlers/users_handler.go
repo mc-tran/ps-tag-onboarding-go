@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -9,6 +10,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/mc-tran/ps-tag-onboarding-go/internal/constants"
+	"github.com/mc-tran/ps-tag-onboarding-go/internal/customerrors"
 	"github.com/mc-tran/ps-tag-onboarding-go/internal/data"
 	"github.com/mc-tran/ps-tag-onboarding-go/internal/interfaces"
 )
@@ -32,7 +34,18 @@ func (p *UsersHandler) GetUser(rw http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := vars["id"]
 
-	user := p.userManager.GetUser(id)
+	user, err := p.userManager.GetUser(id)
+
+	if err != nil {
+		var cusErr *customerrors.UserNotFoundError
+
+		if errors.As(err, &cusErr) {
+
+			rw.WriteHeader(http.StatusNotFound)
+			rw.Write([]byte(err.Error()))
+			return
+		}
+	}
 
 	user.ToJSON(rw)
 }

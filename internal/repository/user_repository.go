@@ -6,6 +6,7 @@ import (
 	"log"
 
 	"github.com/mc-tran/ps-tag-onboarding-go/internal/constants"
+	"github.com/mc-tran/ps-tag-onboarding-go/internal/customerrors"
 	"github.com/mc-tran/ps-tag-onboarding-go/internal/data"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -50,7 +51,7 @@ func (us *UserRepository) AddUser(p *data.User) string {
 	return inserted
 }
 
-func (us *UserRepository) GetUser(id string) data.User {
+func (us *UserRepository) GetUser(id string) (data.User, error) {
 
 	database := us.mongoclient.Database("user")
 	collection := database.Collection("userdetails")
@@ -62,14 +63,15 @@ func (us *UserRepository) GetUser(id string) data.User {
 
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			panic(constants.Error_User_Not_Found)
+			return data.User{}, &customerrors.UserNotFoundError{Message: constants.Error_User_Not_Found}
 		}
+
 		panic(err)
 	}
 
 	fmt.Println("get user")
 
-	return user
+	return user, nil
 }
 
 func (us *UserRepository) DoesUserExist(firstname string, lastname string) bool {

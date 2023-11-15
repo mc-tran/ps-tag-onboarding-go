@@ -5,7 +5,7 @@ import (
 )
 
 type UserManager interface {
-	GetUser(id string) data.User
+	GetUser(id string) (data.User, error)
 	AddUser(p *data.User) string
 	DoesUserExist(firstname string, lastname string) bool
 }
