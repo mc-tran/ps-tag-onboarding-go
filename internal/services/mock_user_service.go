@@ -11,11 +11,11 @@ func NewMockUserService() *MockUserService {
 }
 
 func (us *MockUserService) GetUser(id string) data.User {
-	for _, user := range userList {
-		if user.ID == id {
-			return *user
-		}
-	}
+	// for _, user := range userList {
+	// 	if user.ID == id {
+	// 		return *user
+	// 	}
+	// }
 	return data.User{}
 }
 
@@ -38,14 +38,12 @@ func (us *MockUserService) GetUsers() data.Users {
 
 var userList = []*data.User{
 	&data.User{
-		ID:        "111",
 		FirstName: "Michael",
 		LastName:  "Scott",
 		Email:     "aaa@aaa.com",
 		Age:       23,
 	},
 	&data.User{
-		ID:        "222",
 		FirstName: "Tom",
 		LastName:  "Van",
 		Email:     "bbb@bbb.com",

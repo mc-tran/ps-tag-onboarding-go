@@ -6,6 +6,6 @@ import (
 
 type UserRepository interface {
 	GetUser(id string) data.User
-	AddUser(p *data.User)
+	AddUser(p *data.User) string
 	DoesUserExist(firstname string, lastname string) bool
 }

@@ -9,6 +9,7 @@ import (
 	"github.com/mc-tran/ps-tag-onboarding-go/internal/data"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -48,26 +49,29 @@ func CreateMongoClient(c context.Context) *mongo.Client {
 	return mongoClient
 }
 
-func (us *UserService) AddUser(p *data.User) {
+func (us *UserService) AddUser(p *data.User) string {
 
 	database := us.mongoclient.Database("user")
 	collection := database.Collection("userdetails")
 
 	insertedDocument := bson.M{
-		"id":        p.ID,
 		"firstname": p.FirstName,
 		"lastname":  p.LastName,
 		"email":     p.Email,
 		"age":       p.Age,
 	}
 
-	_, err := collection.InsertOne(us.context, insertedDocument)
+	i, err := collection.InsertOne(us.context, insertedDocument)
 
 	log.Printf("inserted")
 
 	if err != nil {
 		panic(err)
 	}
+
+	inserted := i.InsertedID.(primitive.ObjectID).String()
+
+	return inserted
 }
 
 func (us *UserService) GetUser(id string) data.User {
@@ -75,8 +79,10 @@ func (us *UserService) GetUser(id string) data.User {
 	database := us.mongoclient.Database("user")
 	collection := database.Collection("userdetails")
 
+	objID, _ := primitive.ObjectIDFromHex(id)
+
 	var user data.User
-	err := collection.FindOne(us.context, bson.M{"id": id}).Decode(&user)
+	err := collection.FindOne(us.context, bson.M{"_id": objID}).Decode(&user)
 
 	if err != nil {
 		if err == mongo.ErrNoDocuments {

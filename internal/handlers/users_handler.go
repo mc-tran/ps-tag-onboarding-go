@@ -42,7 +42,9 @@ func (p *UsersHandler) AddUsers(rw http.ResponseWriter, r *http.Request) {
 
 	user := r.Context().Value(KeyUser{}).(data.User)
 
-	p.userService.AddUser(&user)
+	id := p.userService.AddUser(&user)
+
+	rw.Write([]byte(id))
 }
 
 type KeyUser struct{}
