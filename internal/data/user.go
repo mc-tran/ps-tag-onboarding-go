@@ -3,7 +3,7 @@ package data
 import (
 	"encoding/json"
 	"io"
-	"regexp"
+	"net/mail"
 
 	"github.com/mc-tran/ps-tag-onboarding-go/internal/constants"
 )
@@ -45,10 +45,8 @@ func (p *User) ValidateFields() []string {
 
 func validateEmail(email string) bool {
 
-	re := regexp.MustCompile(`.+\@.+\..+`)
-	matches := re.FindAllString(email, -1)
-
-	if len(matches) != 1 {
+	_, err := mail.ParseAddress(email)
+	if err != nil {
 		return false
 	}
 
