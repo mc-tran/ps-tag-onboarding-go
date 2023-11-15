@@ -10,17 +10,19 @@ func NewMockUserService() *MockUserService {
 	return &MockUserService{}
 }
 
-func (us *MockUserService) GetUser(id string) data.User {
+func (us *MockUserService) GetUser(id string) (data.User, error) {
 	for _, user := range userList {
 		if user.ID == id {
-			return *user
+			return *user, nil
 		}
 	}
-	return data.User{}
+	return data.User{}, nil
 }
 
-func (us *MockUserService) AddUser(p *data.User) {
+func (us *MockUserService) AddUser(p *data.User) string {
 	userList = append(userList, p)
+
+	return p.ID
 }
 
 func (us *MockUserService) DoesUserExist(firstname string, lastname string) bool {
