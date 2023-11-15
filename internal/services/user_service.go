@@ -103,11 +103,15 @@ func (us *UserService) DoesUserExist(firstname string, lastname string) bool {
 
 	filter := bson.M{"firstname": firstname, "lastname": lastname}
 
-	count, err := collection.CountDocuments(us.context, filter)
+	var user data.User
+	err := collection.FindOne(us.context, filter).Decode(&user)
 
 	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return false
+		}
 		panic(err)
 	}
 
-	return count > 0
+	return true
 }
