@@ -31,14 +31,7 @@ func (us *UserRepository) AddUser(p *data.User) string {
 	database := us.mongoclient.Database("user")
 	collection := database.Collection("userdetails")
 
-	insertedDocument := bson.M{
-		"firstname": p.FirstName,
-		"lastname":  p.LastName,
-		"email":     p.Email,
-		"age":       p.Age,
-	}
-
-	i, err := collection.InsertOne(us.context, insertedDocument)
+	i, err := collection.InsertOne(us.context, p)
 
 	log.Printf("inserted")
 
