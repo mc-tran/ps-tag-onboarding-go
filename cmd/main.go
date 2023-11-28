@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"context"
 	"log"
 	"net/http"
 	"os"
@@ -9,28 +9,33 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/mc-tran/ps-tag-onboarding-go/internal/handlers"
-	"github.com/mc-tran/ps-tag-onboarding-go/internal/services"
+	"github.com/mc-tran/ps-tag-onboarding-go/internal/repository"
 )
 
 func main() {
 
-	l := log.New(os.Stdout, "minh-api", log.LstdFlags)
+	l := log.New(os.Stdout, "test-api", log.LstdFlags)
 
-	userService := services.NewUserService()
-	uh := handlers.NewUsersHandler(l, userService)
+	mongoUri := os.Getenv("APP_MONGO_CONNECTION_STRING")
+
+	mongoClient := repository.CreateMongoClient(context.TODO(), mongoUri)
+
+	userRepository := repository.NewUserRepository(mongoClient)
+
+	uh := handlers.NewUsersHandler(l, userRepository)
 
 	sm := mux.NewRouter()
 
 	getRouter := sm.Methods(http.MethodGet).Subrouter()
 
 	getRouter.HandleFunc("/users", uh.GetUsers)
-	getRouter.HandleFunc("/find/{id:[0-9]+}", uh.GetUser)
-	getRouter.Use(ErrorHandler)
+	getRouter.HandleFunc("/find/{id}", uh.GetUser)
+	getRouter.Use(handlers.ErrorHandler)
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/save", uh.AddUsers)
 	postRouter.Use(uh.MiddlewareValidateUser)
-	postRouter.Use(ErrorHandler)
+	postRouter.Use(handlers.ErrorHandler)
 
 	s := &http.Server{
 		Addr:         ":8080",
@@ -41,23 +46,4 @@ func main() {
 	}
 
 	s.ListenAndServe()
-}
-
-func ErrorHandler(next http.Handler) http.Handler {
-
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
-		defer func() {
-
-			if err := recover(); err != nil {
-
-				http.Error(w, fmt.Sprintf("An error occured: %s", err), http.StatusInternalServerError)
-
-			}
-		}()
-
-		next.ServeHTTP(w, r)
-
-	})
-
 }

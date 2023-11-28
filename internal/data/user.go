@@ -3,17 +3,17 @@ package data
 import (
 	"encoding/json"
 	"io"
-	"regexp"
+	"net/mail"
 
 	"github.com/mc-tran/ps-tag-onboarding-go/internal/constants"
 )
 
 type User struct {
-	ID        string `json:"id"`
-	FirstName string `json:"firstname"`
-	LastName  string `json:"lastname"`
-	Email     string `json:"email"`
-	Age       int    `json:"age"`
+	ID        string `json:"id" bson:"_id,omitempty"`
+	FirstName string `json:"firstname" bson:"firstname"`
+	LastName  string `json:"lastname" bson:"lastname"`
+	Email     string `json:"email" bson:"email"`
+	Age       int    `json:"age" bson:"age"`
 }
 
 type Users []*User
@@ -45,10 +45,8 @@ func (p *User) ValidateFields() []string {
 
 func validateEmail(email string) bool {
 
-	re := regexp.MustCompile(`.+\@.+\..+`)
-	matches := re.FindAllString(email, -1)
-
-	if len(matches) != 1 {
+	_, err := mail.ParseAddress(email)
+	if err != nil {
 		return false
 	}
 

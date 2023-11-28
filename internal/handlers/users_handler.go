@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -9,17 +10,18 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/mc-tran/ps-tag-onboarding-go/internal/constants"
+	"github.com/mc-tran/ps-tag-onboarding-go/internal/customerrors"
 	"github.com/mc-tran/ps-tag-onboarding-go/internal/data"
 	"github.com/mc-tran/ps-tag-onboarding-go/internal/interfaces"
 )
 
 type UsersHandler struct {
 	l           *log.Logger
-	userService interfaces.UserRepository
+	userManager interfaces.UserManager
 }
 
-func NewUsersHandler(l *log.Logger, userService interfaces.UserRepository) *UsersHandler {
-	return &UsersHandler{l, userService}
+func NewUsersHandler(l *log.Logger, userManager interfaces.UserManager) *UsersHandler {
+	return &UsersHandler{l, userManager}
 }
 
 func (p *UsersHandler) GetUsers(rw http.ResponseWriter, r *http.Request) {
@@ -32,7 +34,18 @@ func (p *UsersHandler) GetUser(rw http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := vars["id"]
 
-	user := p.userService.GetUser(id)
+	user, err := p.userManager.GetUser(id)
+
+	if err != nil {
+		var cusErr *customerrors.UserNotFoundError
+
+		if errors.As(err, &cusErr) {
+
+			rw.WriteHeader(http.StatusNotFound)
+			rw.Write([]byte(err.Error()))
+			return
+		}
+	}
 
 	user.ToJSON(rw)
 }
@@ -42,7 +55,9 @@ func (p *UsersHandler) AddUsers(rw http.ResponseWriter, r *http.Request) {
 
 	user := r.Context().Value(KeyUser{}).(data.User)
 
-	p.userService.AddUser(&user)
+	id := p.userManager.AddUser(&user)
+
+	rw.Write([]byte(id))
 }
 
 type KeyUser struct{}
@@ -60,7 +75,7 @@ func (p UsersHandler) MiddlewareValidateUser(next http.Handler) http.Handler {
 
 		validationErr := prod.ValidateFields()
 
-		if p.userService.DoesUserExist(prod.FirstName, prod.LastName) {
+		if p.userManager.DoesUserExist(prod.FirstName, prod.LastName) {
 			validationErr = append(validationErr, constants.Error_Name_Unique)
 		}
 

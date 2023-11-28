@@ -10,7 +10,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/mc-tran/ps-tag-onboarding-go/internal/data"
-	"github.com/mc-tran/ps-tag-onboarding-go/internal/services"
+	"github.com/mc-tran/ps-tag-onboarding-go/internal/repository"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -18,7 +18,7 @@ func UsersHandler_FindExistingUser(t *testing.T) {
 
 	logger := log.New(bytes.NewBufferString(""), "", 0)
 
-	mockservice := services.NewMockUserService()
+	mockservice := repository.NewMockUserService()
 
 	user := &data.User{
 		ID:        "111",
