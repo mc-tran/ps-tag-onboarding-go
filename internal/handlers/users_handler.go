@@ -55,6 +55,8 @@ func (p *UsersHandler) AddUsers(rw http.ResponseWriter, r *http.Request) {
 
 	user := r.Context().Value(KeyUser{}).(data.User)
 
+	user.ID = ""
+
 	id := p.userManager.AddUser(&user)
 
 	rw.Write([]byte(id))
