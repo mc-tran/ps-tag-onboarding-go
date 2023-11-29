@@ -28,12 +28,11 @@ func main() {
 
 	getRouter := sm.Methods(http.MethodGet).Subrouter()
 
-	getRouter.HandleFunc("/users", uh.GetUsers)
-	getRouter.HandleFunc("/find/{id}", uh.GetUser)
+	getRouter.HandleFunc("/users/{id}", uh.GetUser)
 	getRouter.Use(handlers.ErrorHandler)
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
-	postRouter.HandleFunc("/save", uh.AddUsers)
+	postRouter.HandleFunc("/users", uh.AddUsers)
 	postRouter.Use(uh.MiddlewareValidateUser)
 	postRouter.Use(handlers.ErrorHandler)
 

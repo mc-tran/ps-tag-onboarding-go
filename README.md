@@ -14,11 +14,11 @@ docker-compose up
 
 _Create a User_
 
-curl -v localhost:8080/save -d '{"firstname":"Ham", "lastname":"Cheese", "email": "a@a.a", "age": 20}'
+curl -v localhost:8080/users -d '{"firstname":"Ham", "lastname":"Cheese", "email": "a@a.a", "age": 20}'
 
 _Find a User_
 
 use the id returned from create user
 
-curl localhost:8080/find/6566a0d8595456f2953f62d1
+curl localhost:8080/users/6566a0d8595456f2953f62d1
 
