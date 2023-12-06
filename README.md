@@ -7,7 +7,7 @@ The application is written in Golang, utilising the Gorilla Mux framework. This 
 
 **Run Application**
 
-docker-compose up
+docker-compose up --build
 
 
 **Hit endpoints**
